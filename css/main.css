@@ -1,0 +1,147 @@
+html,body {
+	min-width: 320px;
+	min-height: 420px;
+}
+.lightbox-bg {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+.lightbox-fg {
+	background: white;
+	color: #222;
+	position: absolute;
+	left: 50%;
+	top: 30px;
+	margin-left: -150px;
+	width: 300px;
+	height: auto;
+	padding: 20px;
+}
+@media screen and (max-width: 400px),
+screen and (max-height: 250px) {
+	.lightbox-fg {
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		margin-left: 0;
+	}
+}
+table {
+	width: 100%;
+}
+td {
+	font-size: 16px;
+}
+tr>td:first-of-type {
+	width: 110px;
+	height: 40px;
+}
+tr>td:last-of-type {
+	text-align: right;
+	padding-left: 10px;
+}
+html,
+body {
+	height: 100%;
+	width: 100%;
+}
+body {
+	padding-bottom: 60px;
+}
+.row,
+.container {
+	height: 100%;
+}
+h3 {
+	margin-top: 0;
+}
+h3>p {
+  display: inline-block;
+  float: right;
+  margin: 0;
+  margin-top: -10px;
+  border: 1px solid;
+  color: #555;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  line-height: 36px;
+  text-align: center;
+	cursor: pointer;
+}
+textarea#textbox {
+	float: none;
+	max-width: 500px;
+	width: 100%;
+	height: 100%;
+	padding: 20px;
+	border: 0;
+	resize: none;
+	font-size: 18pt;
+	line-height: 23.4pt;
+	font-family: 'Calibri', sans-serif;
+	background: inherit;
+}
+.navbar.navbar-default {
+	background: white;
+	color: #222;
+	box-shadow: 5px -5px 30px #ddd;
+  height: 50px;
+}
+.navbar>.container {
+	padding-left: 0px;
+	height: 40px;
+  margin-top: 5px;
+}
+.navbar-brand {
+	font-size: 18px;
+  line-height: 38px;
+	margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+.nav.navbar-nav.navbar-right {
+	margin-top: 0px;
+  margin-bottom: 0px;
+	float:right
+}
+.nav>li {
+	display: inline-block;
+}
+.nav>li>a {
+	padding-bottom: 0px;
+  padding-top: 0px;
+}
+img.icon {
+	width: 30px;
+	cursor: pointer;
+  margin-left: -22px;
+}
+
+img.icon.disabled {
+	cursor: default;
+	background-color: #ddd;
+}
+
+textarea:focus {
+	outline: none;
+}
+.minicolors {
+	display: inline-block;
+  vertical-align: -webkit-baseline-middle;
+}
+small {
+	color: gray;
+}
+#container {
+	width: 100%;
+	height: 100%;
+}
+h1 {
+	margin-bottom: 20px;
+}

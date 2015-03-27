@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<title>Infinitweet Web</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="Description" content="Tired of 140 characters? Infinitweet automatically converts any text into an image that you can share with anyone! Infinitweet for iOS is Coming Soon.">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/jquery.minicolors.css">
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-fixed-bottom">
+		<div class="container">
+			<p class="navbar-brand">Infinitweet Chrome</p>
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a id="trash">
+						<img class="icon" src="img/trash.png">
+					</a>
+				</li>
+				<li>
+					<a id="share">
+						<img id="share-image" class="icon" src="img/share.png">
+					</a>
+				</li>
+				<li>
+					<a id="settings">
+						<img class="icon" src="img/settings2.png">
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div id="container">
+		<div class="container">
+			<div class="row">
+				<textarea id="textbox" class="col-sm-12 center-block" placeholder="Infinitweet Chrome will take any text you type and convert it into a downloadable, sharable image. Say Goodbye to Character Limits! Just type here and hit the share button below when you're done." autofocus></textarea>
+			</div>
+		</div>
+	</div>
+	<div id="settings-bg" class="lightbox-bg" style="display:none;"></div>
+	<div id="settings-fg" class="lightbox-fg" style="display:none;">
+		<h3>Settings<p id="hide-settings">x</p></h3><br>
+		<table>
+			<tbody>
+				<tr>
+					<td>Font</td>
+					<td>
+						<select id="font-control">
+							<option value="Arial">Arial</option>
+							<option selected value="Calibri">Calibri</option>
+							<option value="Courier New">Courier New</option>
+							<option value="Times New Roman">Times</option>
+							<option value="Verdana">Verdana</option>
+						</select>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Font Size</td>
+					<td>
+						<input id="font-size-control" type="range" min="8" max="42" value="18">
+					</td>
+					<td id="font-size-val">18</td>
+				</tr>
+				<tr>
+					<td>Text Color</td>
+					<td>
+						<input type="text" id="fg-color" class="form-control demo" value="#000000">
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Background</td>
+					<td>
+						<input type="text" id="bg-color" class="form-control demo" value="#ffffff">
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Padding<br><small>(Not Shown)</small></td>
+					<td>
+						<input id="padding-control" type="range" min="0" max="40" value="20">
+					</td>
+					<td id="padding-val">20</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<!-- MiniColors -->
+	<script src="js/jquery.minicolors.min.js"></script>
+	<script src="js/infinitweet.js"></script>
+</body>
+
+</html>

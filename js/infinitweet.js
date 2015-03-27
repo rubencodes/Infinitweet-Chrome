@@ -4,6 +4,7 @@ var currentFontSize = 18;
 var currentFG = "#000000";
 var currentBG = "#ffffff";
 var textbox = document.getElementById("textbox");
+textbox.value = localStorage.getItem("backup"); //resets to last known state
 
 document.getElementById("trash").addEventListener("click", clearText);
 document.getElementById("share").addEventListener("click", wrapText);
@@ -14,10 +15,11 @@ document.getElementById("hide-settings").addEventListener("click", hideMenu);
 document.getElementById("font-control").addEventListener("change", changeFont);
 document.getElementById("font-size-control").addEventListener("input", changeFontSize);
 document.getElementById("padding-control").addEventListener("input", changePadding);
-textbox.addEventListener("input", checkIfEmpty);
-checkIfEmpty();
+textbox.addEventListener("input", textDidChange);
+textDidChange();
 
-function checkIfEmpty() {
+function textDidChange() {
+	//check if textbox is empty
 	if (textbox.value.length > 0) {	
 		document.getElementById("share-image").setAttribute("class", "icon");
 	} else {
@@ -28,6 +30,9 @@ function checkIfEmpty() {
 			setPlaceholder();
 		}
 	}
+	
+	//backup contents
+	localStorage.setItem("backup", textbox.value);
 }
 
 function setPlaceholder() {

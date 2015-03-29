@@ -81,6 +81,7 @@ function hideMenu() {
 
 function clearText() {
 	textbox.value = "";
+	localStorage.setItem("backup", textbox.value);
 	focusTextbox();
 }
 
@@ -95,7 +96,7 @@ function wrapText() {
 	}
 	
 	var link = document.getElementById("share");
-	var text = textbox.value;
+	var text = textbox.value.trim()+"\n";
 
 	var canvas = document.createElement("canvas");
 	var context = canvas.getContext('2d');
@@ -104,47 +105,6 @@ function wrapText() {
 
 	var lineHeight = 1.3*currentFontSize;
 	var attempts = 0; //counter to interrupt infinite loops
-	
-//	do {
-//		attempts++;
-//		var x = 0;
-//		var y = lineHeight;
-//
-//		//adjust canvas size
-//		if(y*1.8 > canvas.width) 
-//			canvas.width -= 20;
-//		else 
-//			canvas.width += 20;
-//
-//		//reset properties after canvas size change
-//		context.font = currentFontSize+"pt "+currentFont;
-//		context.fillStyle = currentFG;
-//		context.textBaseline = 'bottom';
-//
-//		//try to fit the text
-//		var lines = text.split('\n');
-//		for (var i = 0; i < lines.length; i++) {
-//			var words = lines[i].split(' ');
-//			var line = '';
-//
-//			for (var n = 0; n < words.length; n++) {
-//				var testLine = line + words[n] + ' ';
-//				var metrics = context.measureText(testLine);
-//				var testWidth = metrics.width;
-//
-//				if (testWidth > canvas.width && n > 0) {
-//					line = words[n] + ' ';
-//					y += lineHeight;
-//				} else {
-//					line = testLine;
-//				}
-//			}
-//
-//			if (i < lines.length-1)
-//				y += lineHeight;
-//		}
-//		console.log(y/canvas.width);
-//	} while((y*2.1 < canvas.width || y*1.9 > canvas.width) && attempts < 1000);
 	
 	var previousRatio = 10000000;
 	var delta = 10;
@@ -192,7 +152,6 @@ function wrapText() {
 		}
 		
 		var currentRatio = canvas.width/y;
-		console.log(currentRatio+": "+canvas.width+"/"+y);
 		if (Math.abs(2-previousRatio) < Math.abs(2-currentRatio)) {
 			canvas.width = increased ? canvas.width - delta : canvas.width + delta;
 			
@@ -205,16 +164,6 @@ function wrapText() {
 			previousRatio = currentRatio;
 		}
 	} while (attempts < 1000);
-
-//	//if we hit the attempt limit, deal with it
-//	if(attempts == 1000) {
-//		canvas.width = 320;
-//
-//		//reset properties after canvas size change
-//		context.font = currentFontSize+"pt "+currentFont;
-//		context.fillStyle = currentFG;
-//		context.textBaseline = 'bottom';
-//	}
 
 	x = 0;
 	y = lineHeight;
@@ -237,15 +186,26 @@ function wrapText() {
 			}
 		}
 		context.fillText(line, x, y);
-		if (i < lines.length-1)
+		if (i < lines.length-1) {
 			y += lineHeight;
+		}
 	}
 
 	// create a temporary canvas obj to transfer the pixel data
 	var temp = document.createElement('canvas');
 	var temp_context = temp.getContext('2d');
-	temp.width = canvas.width + 2*currentPadding;
+	
+	//prepare wordmark
+	temp_context.font = "10pt Helvetica";
+	var wordmark = "Infinitweet Chrome";
+	var wordmarkSize = temp_context.measureText(wordmark).width;
+	console.log(wordmarkSize);
+	
+	//set temp canvas to correct size
+	temp.width = Math.max(canvas.width, 2*wordmarkSize) + 2*currentPadding;
 	temp.height = y + currentPadding + (currentPadding - (lineHeight-currentFontSize));
+	
+	//draw Infinitweet to canvas
 	temp_context.rect(0, 0, temp.width, temp.height);
 	temp_context.fillStyle = currentBG;
 	temp_context.fill();
@@ -253,6 +213,12 @@ function wrapText() {
 	temp_context.fillStyle = currentFG;
 	temp_context.textBaseline = 'bottom';
 	temp_context.drawImage(canvas, currentPadding, currentPadding - (lineHeight-currentFontSize));
+	
+	//draw wordmark
+	temp_context.font = "10pt Helvetica";
+  temp_context.textAlign = 'right';
+	temp_context.fillStyle = "#888888";
+	temp_context.fillText(wordmark, temp.width - currentPadding, temp.height - currentPadding);
 
 	link.href = temp.toDataURL();
 	link.download = "InfinitweetExport.png";

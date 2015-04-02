@@ -74,7 +74,7 @@ h3>p {
   text-align: center;
 	cursor: pointer;
 }
-textarea#textbox {
+p#textbox {
 	float: none;
 	max-width: 500px;
 	width: 100%;
@@ -128,7 +128,7 @@ img.icon.disabled {
 	background-color: #ddd;
 }
 
-textarea:focus {
+#textbox:focus {
 	outline: none;
 }
 .minicolors {

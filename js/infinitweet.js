@@ -219,10 +219,46 @@ function wrapText() {
   temp_context.textAlign = 'right';
 	temp_context.fillStyle = "#888888";
 	temp_context.fillText(wordmark, temp.width - currentPadding, temp.height - currentPadding);
-
+	
 	link.href = temp.toDataURL();
 	link.download = "InfinitweetExport.png";
+	
+//	var data = "<svg width=200 height=200>" +
+//						 "<foreignObject width=100% height=100%>" +
+//						 document.getElementById("textbox").innerHTML +
+//						 "</foreignObject>" +
+//						 "</svg>";
+//	
+//	var serialized = new XMLSerializer().serializeToString(data.toDOM());
+//	
+//	var canvas = document.createElement('canvas');
+//	var ctx = canvas.getContext('2d');
+//	var DOMURL = window.URL || window.webkitURL || window;
+//	
+//	var img = new Image();
+//	var svg = new Blob([serialized], {type: 'image/svg+xml;charset=utf-8'});
+//	var url = DOMURL.createObjectURL(svg);
+//
+//	img.onload = function () {
+//		ctx.drawImage(img, 0, 0);
+//		DOMURL.revokeObjectURL(url);
+//		window.open(canvas.toDataURL("image/png"));
+////		link.href = canvas.toDataURL();
+////		link.download = "InfinitweetExport.png";
+//	}
+//
+//	img.src = url;
 }
+
+String.prototype.toDOM=function(){
+  var d=document
+     ,i
+     ,a=d.createElement("div")
+     ,b=d.createDocumentFragment();
+  a.innerHTML=this;
+  while(i=a.firstChild)b.appendChild(i);
+  return b;
+};
 
 $("#fg-color").minicolors({
 	control: 'hue',

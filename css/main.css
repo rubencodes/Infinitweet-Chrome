@@ -74,7 +74,7 @@ h3>p {
   text-align: center;
 	cursor: pointer;
 }
-p#textbox {
+#textbox {
 	float: none;
 	max-width: 500px;
 	width: 100%;
@@ -84,7 +84,7 @@ p#textbox {
 	resize: none;
 	font-size: 18pt;
 	line-height: 23.4pt;
-	font-family: 'Calibri', sans-serif;
+	font-family: 'Helvetica', sans-serif;
 	background: inherit;
 }
 .navbar.navbar-default {
@@ -114,20 +114,17 @@ p#textbox {
 	display: inline-block;
 }
 .nav>li>a {
-	padding-bottom: 0px;
-  padding-top: 0px;
+	padding: 0px 10px;
 }
-img.icon {
-	width: 30px;
+.icon {
+	font-size: 35px;
+	color: black;
 	cursor: pointer;
-  margin-left: -22px;
 }
-
-img.icon.disabled {
-	cursor: default;
-	background-color: #ddd;
+.icon.disabled {
+	cursor: not-allowed;
+	color: #aaa;
 }
-
 #textbox:focus {
 	outline: none;
 }

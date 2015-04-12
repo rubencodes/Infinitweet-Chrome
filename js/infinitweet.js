@@ -1,5 +1,5 @@
-var currentPadding = 20;
-var currentFont = "Calibri";
+var currentPadding = 30;
+var currentFont = "Helvetica";
 var currentFontSize = 18;
 var currentFG = "#000000";
 var currentBG = "#ffffff";
@@ -20,17 +20,17 @@ textDidChange();
 
 function textDidChange() {
 	//check if textbox is empty
-	if (textbox.value.length > 0) {	
-		document.getElementById("share-image").setAttribute("class", "icon");
+	if (textbox.value.length > 0) {
+		document.getElementById("share-image").setAttribute("class", "icon ion-ios-upload-outline");
 	} else {
-		document.getElementById("share-image").setAttribute("class", "icon disabled");
-		if(localStorage.getItem("shownMessage") == null) {
+		document.getElementById("share-image").setAttribute("class", "icon ion-ios-upload-outline disabled");
+		if (localStorage.getItem("shownMessage") == null) {
 			localStorage.setItem("shownMessage", true);
 		} else {
 			setPlaceholder();
 		}
 	}
-	
+
 	//backup contents
 	localStorage.setItem("backup", textbox.value);
 }
@@ -52,14 +52,14 @@ function changeFont() {
 }
 
 function changeFontSize() {
-	currentFontSize = parseInt(document.getElementById("font-size-control").value);
+	currentFontSize = parseInt(document.getElementById("font-size-control").value, 10);
 	document.getElementById("font-size-val").innerHTML = currentFontSize;
-	textbox.style.fontSize = currentFontSize+"pt";
-	textbox.style.lineHeight = (currentFontSize * 1.3)+"pt";
+	textbox.style.fontSize = currentFontSize + "pt";
+	textbox.style.lineHeight = (currentFontSize * 1.3) + "pt";
 }
 
 function changePadding() {
-	currentPadding = parseInt(document.getElementById("padding-control").value);
+	currentPadding = parseInt(document.getElementById("padding-control").value, 10);
 	document.getElementById("padding-val").innerHTML = currentPadding;
 }
 
@@ -90,41 +90,42 @@ function focusTextbox() {
 }
 
 function wrapText() {
-	if(textbox.value.length == 0) {
+	if (textbox.value.length == 0) {
 		textbox.placeholder = "Uh-oh...your Infinitweet is empty! Please enter some text first."
 		return;
 	}
-	
+
 	var link = document.getElementById("share");
-	var text = textbox.value.trim()+"\n";
+	var text = textbox.value.trim() + "\n";
 
 	var canvas = document.createElement("canvas");
 	var context = canvas.getContext('2d');
 	canvas.width = 180;
 	canvas.height = 10000;
 
-	var lineHeight = 1.3*currentFontSize;
-	var attempts = 0; //counter to interrupt infinite loops
-	
-	var previousRatio = 10000000;
+	var lineHeight = 1.5 * currentFontSize;
+	var cycleCount = 0; //counter to interrupt infinite loops
+	var maxCycles = 1000;
+
+	var ratio = 2;
+	var lastRatio = 10000000;
 	var delta = 10;
 	var increased = false;
-	
-	do {
-		attempts++;
+
+	while (cycleCount++ < maxCycles) {
 		var x = 0;
 		var y = lineHeight;
-		
-		if(previousRatio >= 2) {
+
+		if (lastRatio >= ratio) {
 			canvas.width -= delta;
 			increased = false;
 		} else {
 			canvas.width += delta;
 			increased = true;
 		}
-		
+
 		//reset properties after canvas size change
-		context.font = currentFontSize+"pt "+currentFont;
+		context.font = currentFontSize + "pt " + currentFont;
 		context.fillStyle = currentFG;
 		context.textBaseline = 'bottom';
 
@@ -147,24 +148,32 @@ function wrapText() {
 				}
 			}
 
-			if (i < lines.length-1)
+			if (i < lines.length - 1)
 				y += lineHeight;
 		}
-		
-		var currentRatio = canvas.width/y;
-		if (Math.abs(2-previousRatio) < Math.abs(2-currentRatio)) {
-			canvas.width = increased ? canvas.width - delta : canvas.width + delta;
-			
-			//reset properties after canvas size change
-			context.font = currentFontSize+"pt "+currentFont;
-			context.fillStyle = currentFG;
-			context.textBaseline = 'bottom';
-			break;
-		} else {
-			previousRatio = currentRatio;
-		}
-	} while (attempts < 1000);
 
+		var currentRatio = (canvas.width + (2 * currentPadding)) / (y + currentPadding + (currentPadding - (lineHeight - currentFontSize)));
+		if (Math.abs(ratio - lastRatio) < Math.abs(ratio - currentRatio)) {
+			canvas.width = increased ? canvas.width - delta : canvas.width + delta;
+			break;
+		} 
+		
+		if (Math.abs(ratio - currentRatio) < 0.05) {
+			break;	
+		} else {
+			lastRatio = currentRatio;
+		}
+	}
+
+	var minSize = { width: 440, height: 220 };
+	canvas.width  = Math.max(canvas.width, minSize.width - (2 * currentPadding));
+	canvas.height = Math.max(y, minSize.height - (2 * currentPadding));
+
+	//reset properties after canvas size change
+	context.font = currentFontSize + "pt " + currentFont;
+	context.fillStyle = currentFG;
+	context.textBaseline = 'bottom';
+	
 	x = 0;
 	y = lineHeight;
 
@@ -186,7 +195,7 @@ function wrapText() {
 			}
 		}
 		context.fillText(line, x, y);
-		if (i < lines.length-1) {
+		if (i < lines.length - 1) {
 			y += lineHeight;
 		}
 	}
@@ -194,17 +203,16 @@ function wrapText() {
 	// create a temporary canvas obj to transfer the pixel data
 	var temp = document.createElement('canvas');
 	var temp_context = temp.getContext('2d');
-	
+
 	//prepare wordmark
 	temp_context.font = "10pt Helvetica";
 	var wordmark = "Infinitweet Chrome";
 	var wordmarkSize = temp_context.measureText(wordmark).width;
-	console.log(wordmarkSize);
-	
+
 	//set temp canvas to correct size
-	temp.width = Math.max(canvas.width, 2*wordmarkSize) + 2*currentPadding;
-	temp.height = y + currentPadding + (currentPadding - (lineHeight-currentFontSize));
-	
+	temp.width  = canvas.width + (2 * currentPadding);
+	temp.height = y + currentPadding + (currentPadding - (lineHeight - currentFontSize));
+
 	//draw Infinitweet to canvas
 	temp_context.rect(0, 0, temp.width, temp.height);
 	temp_context.fillStyle = currentBG;
@@ -212,52 +220,51 @@ function wrapText() {
 	temp_context.font = context.font;
 	temp_context.fillStyle = currentFG;
 	temp_context.textBaseline = 'bottom';
-	temp_context.drawImage(canvas, currentPadding, currentPadding - (lineHeight-currentFontSize));
-	
+	temp_context.drawImage(canvas, currentPadding, currentPadding - (lineHeight - currentFontSize));
+
 	//draw wordmark
 	temp_context.font = "10pt Helvetica";
-  temp_context.textAlign = 'right';
+	temp_context.textAlign = 'right';
 	temp_context.fillStyle = "#888888";
 	temp_context.fillText(wordmark, temp.width - currentPadding, temp.height - currentPadding);
-	
+
 	link.href = temp.toDataURL();
 	link.download = "InfinitweetExport.png";
-	
-//	var data = "<svg width=200 height=200>" +
-//						 "<foreignObject width=100% height=100%>" +
-//						 document.getElementById("textbox").innerHTML +
-//						 "</foreignObject>" +
-//						 "</svg>";
-//	
-//	var serialized = new XMLSerializer().serializeToString(data.toDOM());
-//	
-//	var canvas = document.createElement('canvas');
-//	var ctx = canvas.getContext('2d');
-//	var DOMURL = window.URL || window.webkitURL || window;
-//	
-//	var img = new Image();
-//	var svg = new Blob([serialized], {type: 'image/svg+xml;charset=utf-8'});
-//	var url = DOMURL.createObjectURL(svg);
-//
-//	img.onload = function () {
-//		ctx.drawImage(img, 0, 0);
-//		DOMURL.revokeObjectURL(url);
-//		window.open(canvas.toDataURL("image/png"));
-////		link.href = canvas.toDataURL();
-////		link.download = "InfinitweetExport.png";
-//	}
-//
-//	img.src = url;
+
+	//	var data = "<svg width=200 height=200>" +
+	//						 "<foreignObject width=100% height=100%>" +
+	//						 document.getElementById("textbox").innerHTML +
+	//						 "</foreignObject>" +
+	//						 "</svg>";
+	//	
+	//	var serialized = new XMLSerializer().serializeToString(data.toDOM());
+	//	
+	//	var canvas = document.createElement('canvas');
+	//	var ctx = canvas.getContext('2d');
+	//	var DOMURL = window.URL || window.webkitURL || window;
+	//	
+	//	var img = new Image();
+	//	var svg = new Blob([serialized], {type: 'image/svg+xml;charset=utf-8'});
+	//	var url = DOMURL.createObjectURL(svg);
+	//
+	//	img.onload = function () {
+	//		ctx.drawImage(img, 0, 0);
+	//		DOMURL.revokeObjectURL(url);
+	//		window.open(canvas.toDataURL("image/png"));
+	////		link.href = canvas.toDataURL();
+	////		link.download = "InfinitweetExport.png";
+	//	}
+	//
+	//	img.src = url;
 }
 
-String.prototype.toDOM=function(){
-  var d=document
-     ,i
-     ,a=d.createElement("div")
-     ,b=d.createDocumentFragment();
-  a.innerHTML=this;
-  while(i=a.firstChild)b.appendChild(i);
-  return b;
+String.prototype.toDOM = function () {
+	var d = document,
+		i, a = d.createElement("div"),
+		b = d.createDocumentFragment();
+	a.innerHTML = this;
+	while (i = a.firstChild) b.appendChild(i);
+	return b;
 };
 
 $("#fg-color").minicolors({
@@ -294,12 +301,18 @@ $("#bg-color").minicolors({
 	theme: 'bootstrap'
 });
 
-
 //Google Analytics
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+(function (i, s, o, g, r, a, m) {
+	i['GoogleAnalyticsObject'] = r;
+	i[r] = i[r] || function () {
+		(i[r].q = i[r].q || []).push(arguments)
+	}, i[r].l = 1 * new Date();
+	a = s.createElement(o),
+		m = s.getElementsByTagName(o)[0];
+	a.async = 1;
+	a.src = g;
+	m.parentNode.insertBefore(a, m)
+})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
 ga('create', 'UA-59172782-1', 'auto');
 ga('send', 'pageview');

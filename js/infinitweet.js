@@ -211,7 +211,7 @@ function wrapText() {
 
 	//set temp canvas to correct size
 	temp.width  = canvas.width + (2 * currentPadding);
-	temp.height = y + currentPadding + (currentPadding - (lineHeight - currentFontSize));
+	temp.height = canvas.height + currentPadding + (currentPadding - (lineHeight - currentFontSize));
 
 	//draw Infinitweet to canvas
 	temp_context.rect(0, 0, temp.width, temp.height);

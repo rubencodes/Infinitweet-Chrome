@@ -3,8 +3,25 @@ var currentFont = "Helvetica";
 var currentFontSize = 18;
 var currentFG = "#000000";
 var currentBG = "#ffffff";
+
 var textbox = document.getElementById("textbox");
 textbox.value = localStorage.getItem("backup"); //resets to last known state
+
+currentFont = localStorage.getItem("font") || "Helvetica";
+document.getElementById("font-control").value = currentFont;
+changeFont();
+
+currentFontSize = localStorage.getItem("font-size") || 18;
+document.getElementById("font-size-control").value = currentFontSize;
+changeFontSize();
+
+currentFG = localStorage.getItem("fg-color") || "#000000";
+document.getElementById("fg-color").value = currentFG;
+changeForeground(currentFG);
+
+currentBG = localStorage.getItem("bg-color") || "#ffffff";
+document.getElementById("bg-color").value = currentBG;
+changeBackground(currentBG);
 
 document.getElementById("trash").addEventListener("click", clearText);
 document.getElementById("share").addEventListener("click", wrapText);
@@ -14,9 +31,44 @@ document.getElementById("settings-bg").addEventListener("click", hideMenu);
 document.getElementById("hide-settings").addEventListener("click", hideMenu);
 document.getElementById("font-control").addEventListener("change", changeFont);
 document.getElementById("font-size-control").addEventListener("input", changeFontSize);
-document.getElementById("padding-control").addEventListener("input", changePadding);
+
+$("#fg-color").minicolors({
+	control: 'hue',
+	defaultValue: currentFG,
+	inline: $(this).attr('data-inline') === 'true',
+	letterCase: 'lowercase',
+	position: 'bottom right',
+	change: function (hex, opacity) {
+		if (!hex) return;
+		if (opacity) hex += ', ' + opacity;
+		if (typeof console === 'object') {
+			currentFG = hex;
+			changeForeground(currentFG);
+		}
+	},
+	theme: 'bootstrap'
+});
+
+$("#bg-color").minicolors({
+	control: 'hue',
+	defaultValue: currentBG,
+	inline: $(this).attr('data-inline') === 'true',
+	letterCase: 'lowercase',
+	position: 'bottom right',
+	change: function (hex, opacity) {
+		if (!hex) return;
+		if (opacity) hex += ', ' + opacity;
+		if (typeof console === 'object') {
+			currentBG = hex;
+			changeBackground(currentBG);
+		}
+	},
+	theme: 'bootstrap'
+});
+
 textbox.addEventListener("input", textDidChange);
 textDidChange();
+
 
 function textDidChange() {
 	//check if textbox is empty
@@ -49,6 +101,7 @@ function changeFont() {
 	var e = document.getElementById("font-control");
 	currentFont = e.options[e.selectedIndex].value;
 	textbox.style.fontFamily = currentFont;
+	localStorage.setItem("font", currentFont);
 }
 
 function changeFontSize() {
@@ -56,11 +109,17 @@ function changeFontSize() {
 	document.getElementById("font-size-val").innerHTML = currentFontSize;
 	textbox.style.fontSize = currentFontSize + "pt";
 	textbox.style.lineHeight = (currentFontSize * 1.3) + "pt";
+	localStorage.setItem("font-size", currentFontSize);
 }
 
-function changePadding() {
-	currentPadding = parseInt(document.getElementById("padding-control").value, 10);
-	document.getElementById("padding-val").innerHTML = currentPadding;
+function changeBackground(color) {
+	document.body.style.background = color;
+	localStorage.setItem("bg-color", color);
+}
+
+function changeForeground(color) {
+	textbox.style.color = color;
+	localStorage.setItem("fg-color", color);
 }
 
 function showMenu() {
@@ -95,27 +154,25 @@ function wrapText() {
 		return;
 	}
 
-	var link = document.getElementById("share");
-	var text = textbox.value.trim() + "\n";
+	var text  = textbox.value.trim()+"\n";
+	var lines = text.split('\n');
 
-	var canvas = document.createElement("canvas");
+	var canvas  = document.createElement("canvas");
 	var context = canvas.getContext('2d');
-	canvas.width = 180;
+	canvas.width  = 180;
 	canvas.height = 10000;
 
 	var lineHeight = 1.5 * currentFontSize;
 	var cycleCount = 0; //counter to interrupt infinite loops
-	var maxCycles = 1000;
+	var maxCycles  = 1000;
 
-	var ratio = 2;
-	var lastRatio = 10000000;
+	var ratio = 1.90;
+	var lastRatio  = 10000000;
+	var lastHeight = 0;
 	var delta = 10;
 	var increased = false;
 
 	while (cycleCount++ < maxCycles) {
-		var x = 0;
-		var y = lineHeight;
-
 		if (lastRatio >= ratio) {
 			canvas.width -= delta;
 			increased = false;
@@ -129,61 +186,43 @@ function wrapText() {
 		context.fillStyle = currentFG;
 		context.textBaseline = 'bottom';
 
-		//try to fit the text
-		var lines = text.split('\n');
-		for (var i = 0; i < lines.length; i++) {
-			var words = lines[i].split(' ');
-			var line = '';
-
-			for (var n = 0; n < words.length; n++) {
-				var testLine = line + words[n] + ' ';
-				var metrics = context.measureText(testLine);
-				var testWidth = metrics.width;
-
-				if (testWidth > canvas.width && n > 0) {
-					line = words[n] + ' ';
-					y += lineHeight;
-				} else {
-					line = testLine;
-				}
-			}
-
-			if (i < lines.length - 1)
-				y += lineHeight;
-		}
-
-		var currentRatio = (canvas.width + (2 * currentPadding)) / (y + currentPadding + (currentPadding - (lineHeight - currentFontSize)));
+		var currentHeight = getHeightForTextFromWidth(lines, canvas.width, lineHeight, context);
+		var currentRatio  = (canvas.width + (2 * currentPadding)) / (currentHeight + (2*currentPadding - (lineHeight - currentFontSize)));
+		
 		if (Math.abs(ratio - lastRatio) < Math.abs(ratio - currentRatio)) {
-			canvas.width = increased ? canvas.width - delta : canvas.width + delta;
+			canvas.width  = increased ? canvas.width - delta : canvas.width + delta;
+			currentHeight = lastHeight;
 			break;
 		} 
 		
 		if (Math.abs(ratio - currentRatio) < 0.05) {
 			break;	
 		} else {
-			lastRatio = currentRatio;
+			lastRatio  = currentRatio;
+			lastHeight = currentHeight;
 		}
 	}
 
-	var minSize = { width: 440, height: 220 };
-	canvas.width  = Math.max(canvas.width, minSize.width - (2 * currentPadding));
-	canvas.height = Math.max(y, minSize.height - (2 * currentPadding));
-
+	//gets height, then calculates proportional width
+	var minSize   = { width: 390.5, height: 220 };
+	canvas.height = Math.max(currentHeight, minSize.height - (2*currentPadding - (lineHeight - currentFontSize)));
+	canvas.width  = Math.max(canvas.width,  minSize.width  - (2 * currentPadding));
+	
 	//reset properties after canvas size change
 	context.font = currentFontSize + "pt " + currentFont;
 	context.fillStyle = currentFG;
 	context.textBaseline = 'bottom';
 	
-	x = 0;
-	y = lineHeight;
+	var x = 0;
+	var y = lineHeight;
 
 	for (var i = 0; i < lines.length; i++) {
 		var words = lines[i].split(' ');
-		var line = '';
+		var line  = '';
 
 		for (var n = 0; n < words.length; n++) {
-			var testLine = line + words[n] + ' ';
-			var metrics = context.measureText(testLine);
+			var testLine  = line + words[n] + ' ';
+			var metrics   = context.measureText(testLine);
 			var testWidth = metrics.width;
 
 			if (testWidth > canvas.width && n > 0) {
@@ -195,9 +234,7 @@ function wrapText() {
 			}
 		}
 		context.fillText(line, x, y);
-		if (i < lines.length - 1) {
-			y += lineHeight;
-		}
+		if (i < lines.length-1) y += lineHeight;
 	}
 
 	// create a temporary canvas obj to transfer the pixel data
@@ -210,8 +247,8 @@ function wrapText() {
 	var wordmarkSize = temp_context.measureText(wordmark).width;
 
 	//set temp canvas to correct size
-	temp.width  = canvas.width + (2 * currentPadding);
-	temp.height = canvas.height + currentPadding + (currentPadding - (lineHeight - currentFontSize));
+	temp.height = canvas.height + (2 * currentPadding - (lineHeight - currentFontSize));
+	temp.width  = canvas.width  + (2 * currentPadding);
 
 	//draw Infinitweet to canvas
 	temp_context.rect(0, 0, temp.width, temp.height);
@@ -228,78 +265,36 @@ function wrapText() {
 	temp_context.fillStyle = "#888888";
 	temp_context.fillText(wordmark, temp.width - currentPadding, temp.height - currentPadding);
 
+	var link = document.getElementById("share");
 	link.href = temp.toDataURL();
 	link.download = "InfinitweetExport.png";
-
-	//	var data = "<svg width=200 height=200>" +
-	//						 "<foreignObject width=100% height=100%>" +
-	//						 document.getElementById("textbox").innerHTML +
-	//						 "</foreignObject>" +
-	//						 "</svg>";
-	//	
-	//	var serialized = new XMLSerializer().serializeToString(data.toDOM());
-	//	
-	//	var canvas = document.createElement('canvas');
-	//	var ctx = canvas.getContext('2d');
-	//	var DOMURL = window.URL || window.webkitURL || window;
-	//	
-	//	var img = new Image();
-	//	var svg = new Blob([serialized], {type: 'image/svg+xml;charset=utf-8'});
-	//	var url = DOMURL.createObjectURL(svg);
-	//
-	//	img.onload = function () {
-	//		ctx.drawImage(img, 0, 0);
-	//		DOMURL.revokeObjectURL(url);
-	//		window.open(canvas.toDataURL("image/png"));
-	////		link.href = canvas.toDataURL();
-	////		link.download = "InfinitweetExport.png";
-	//	}
-	//
-	//	img.src = url;
 }
 
-String.prototype.toDOM = function () {
-	var d = document,
-		i, a = d.createElement("div"),
-		b = d.createDocumentFragment();
-	a.innerHTML = this;
-	while (i = a.firstChild) b.appendChild(i);
-	return b;
-};
+function getHeightForTextFromWidth(lines, width, lineHeight, context) {
+	var y = lineHeight;
+	
+	//try to fit the text
+	for (var i = 0; i < lines.length; i++) {
+		var words = lines[i].split(' ');
+		var line  = '';
 
-$("#fg-color").minicolors({
-	control: 'hue',
-	defaultValue: currentFG,
-	inline: $(this).attr('data-inline') === 'true',
-	letterCase: 'lowercase',
-	position: 'bottom right',
-	change: function (hex, opacity) {
-		if (!hex) return;
-		if (opacity) hex += ', ' + opacity;
-		if (typeof console === 'object') {
-			currentFG = hex;
-			document.getElementById("textbox").style.color = currentFG;
-		}
-	},
-	theme: 'bootstrap'
-});
+		for (var n = 0; n < words.length; n++) {
+			var testLine  = line + words[n] + ' ';
+			var metrics   = context.measureText(testLine);
+			var testWidth = metrics.width;
 
-$("#bg-color").minicolors({
-	control: 'hue',
-	defaultValue: currentBG,
-	inline: $(this).attr('data-inline') === 'true',
-	letterCase: 'lowercase',
-	position: 'bottom right',
-	change: function (hex, opacity) {
-		if (!hex) return;
-		if (opacity) hex += ', ' + opacity;
-		if (typeof console === 'object') {
-			currentBG = hex;
-			document.body.style.background = currentBG;
+			if (testWidth > width && n > 0) {
+				line = words[n] + ' ';
+				y += lineHeight;
+			} else {
+				line = testLine;
+			}
 		}
-	},
-	theme: 'bootstrap'
-});
+
+		if (i < lines.length-1) y += lineHeight;
+	}
+	return y;
+}
 
 //Google Analytics
 (function (i, s, o, g, r, a, m) {

@@ -6,3 +6,5 @@ Infinitweet is an app that can take any amount of text, and convert it into an i
 This Chrome implementation of Infinitweet works using HTML5 Canvas. For the original iPhone app, see the [Infinitweet Free](https://raw.githubusercontent.com/rubencodes/Infinitweet-Free/) repository.
 
 An implementation of Infinitweet was featured in `Apple Watch for Developers`, an Apress Media book.
+
+**To purchase the watermark-free version of Infinitweet with many more features, visit [Infinitweet.com](http://Infinitweet.com)!**

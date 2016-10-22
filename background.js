@@ -31,8 +31,12 @@ chrome.runtime.onInstalled.addListener((details) => {
       });
     });
   }
-  else if(details.reason === 'update' && previousVersion === '1.2') {
-    
+  else if(details.reason === 'update' && details.previousVersion === '1.2') {
+    isAuthenticated().then((isAuth) => {
+      chrome.tabs.create({
+        url: isAuth ? '/loggedIn.html' : '/loggedOut.html'
+      });
+    });
   }
 });
 

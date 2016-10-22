@@ -3,7 +3,7 @@ function createInfinitweet(options) {
 	const lines = text.split('\n');
 
 	const canvas  = document.createElement('canvas');
-	const context = canvas.getContext('2d');
+	const context = canvas.getContext('2d', {alpha: false});
 	canvas.width  = 180;
 	canvas.height = 10000;
 
@@ -55,11 +55,13 @@ function createInfinitweet(options) {
 	canvas.width  = Math.max(canvas.width,  minSize.width  - (2 * options.paddingSize));
 
 	//reset properties after canvas size change
+	context.fillStyle = '#FFFFFF';
+    context.fillRect(0, 0, canvas.width, canvas.height);
 	context.font = options.fontSize + 'pt ' + options.fontFamily;
 	context.fillStyle = options.foregroundColor;
 	context.textBaseline = 'bottom';
 
-	//write to canvas
+    //write to canvas
 	const x = 0;
 	let y = lineHeight;
 	for (let i = 0; i < lines.length; i++) {
@@ -84,9 +86,9 @@ function createInfinitweet(options) {
 		if (i < lines.length-1) y += lineHeight;
 	}
 
-	// create a temporary canvas obj to transfer the pixel data
+	//create a temporary canvas obj to transfer the pixel data
 	const temp = document.createElement('canvas');
-	const temp_context = temp.getContext('2d');
+	const temp_context = temp.getContext('2d', {alpha: false});
 
 	//prepare wordmark
 	temp_context.font = '10pt Helvetica';

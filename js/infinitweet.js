@@ -151,3 +151,17 @@ function getHeightForTextFromWidth(lines, width, lineHeight, context) {
 
 	return y;
 }
+
+function postInfinitweet(params) {
+  const base64Prefix = 'data:image/jpeg;base64,';
+  params.media_data = params.media_data.slice(base64Prefix.length - 1);
+  
+  return fetch('https://fantastic-hippo.appspot.com/postInfinitweet', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {  
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(params)
+  });
+}

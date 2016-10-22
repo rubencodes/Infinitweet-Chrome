@@ -6,50 +6,28 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="Description" content="Tired of 140 characters? Infinitweet automatically converts any text into an image that you can share with anyone! Infinitweet for iOS is Coming Soon.">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/ionicons.min.css">
 	<link rel="stylesheet" href="css/jquery.minicolors.css">
 </head>
 <body>
-	<nav class="navbar navbar-default navbar-fixed-bottom">
-		<div class="container">
-			<p class="navbar-brand">Infinitweet</p>
-			<ul class="nav navbar-nav navbar-right">
-				<li>
-					<a id="trash">
-						<p class="icon ion-ios-trash-outline"></p>
-					</a>
-				</li>
-				<li>
-					<a id="share">
-						<p id="share-image" class="icon ion-ios-upload-outline"></p>
-					</a>
-				</li>
-				<li>
-					<a id="settings">
-						<p class="icon ion-ios-gear-outline"></p>
-					</a>
-				</li>
-			</ul>
-		</div>
-	</nav>
 	<div id="container">
-		<div class="container">
-			<div class="row">
-				<textarea id="textbox" class="col-sm-12 center-block" placeholder="Infinitweet Chrome will take any text you type and convert it into a downloadable, sharable image. Say Goodbye to Character Limits! Just type here and hit the share button below when you're done." autofocus></textarea>
-			</div>
-		</div>
+      <div class="container">
+        <div class="row">
+          <textarea id="textbox" class="col-sm-12 center-block" placeholder="Infinitweet Chrome will take any text you type and convert it into a downloadable, sharable image. Say Goodbye to Character Limits! Just type here and hit the share button below when you're done." autofocus></textarea>
+        </div>
+      </div>
 	</div>
-	<div id="settings-bg" class="lightbox-bg" style="display:none;"></div>
-	<div id="settings-fg" class="lightbox-fg" style="display:none;">
-		<h3>Settings<p id="hide-settings" class="icon ion-ios-close-outline"></p></h3><br>
-	</div>
+	<nav class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container">
+        <p class="navbar-brand">Infinitweet</p>
+        <button id="share" type="button" class="btn btn-default pull-right" style="margin-left: 10px;">Post</button>
+        <button id="trash" type="button" class="btn btn-danger pull-right">Clear</button>
+      </div>
+	</nav>
 
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-	<!-- MiniColors -->
-	<script src="js/jquery.minicolors.min.js"></script>
 	<script src="js/infinitweet.js"></script>
 	<script src="js/app.js"></script>
 </body>

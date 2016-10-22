@@ -1,5 +1,5 @@
 $('textarea#tweetBox').on('input change keyup', handleTyping);
-$('button#clickToTweet').on('click', postInfinitweet);
+$('button#clickToTweet').on('click', tweet);
 
 // Set preview source.
 const selectedText = decodeURIComponent(window.location.search.slice('?text='.length));
@@ -18,20 +18,12 @@ function previewInfinitweet(text) {
   $('img#preview').attr('src', infinitweet.base64);
 }
 
-function postInfinitweet() {
+function tweet() {
   // Gather data.
   const status = $('textarea#tweetBox').val();
-  const media_data = $('img#preview').attr('src').slice('data:image/jpeg;base64,'.length - 1);
+  const media_data = $('img#preview').attr('src');
 
-  // Post the infinitweet.
-  fetch('http://localhost:8080/postInfinitweet', {
-    method: 'POST',
-    credentials: 'include',
-    headers: {  
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ status, media_data })
-  }).then((results) => {
+  postInfinitweet({ status, media_data }).then((results) => {
     window.location = '/success.html';
   }).catch((error) => {
     alert(error);

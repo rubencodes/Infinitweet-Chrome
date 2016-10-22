@@ -6,11 +6,19 @@
     "version": "1.2",
 		"browser_action": {
         "default_icon": "img/128.png",
-        "default_popup": "index.html"
+        "default_popup": "app.html"
     },
+    "background": {
+      "scripts": [ "js/infinitweet.js", "background.js" ],
+      "persistent": false
+    },
+    "permissions": [
+      "contextMenus",
+      "https://ajax.googleapis.com/",
+      "https://maxcdn.bootstrapcdn.com/"
+    ],
     "icons": {
         "48":  "img/48.png",
         "128": "img/128.png"
     }
-
 }

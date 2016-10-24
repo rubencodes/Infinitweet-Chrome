@@ -13,13 +13,20 @@ chrome.contextMenus.onClicked.addListener((data) => {
   const top = (screen.height/2)-(h/2);
   const left = (screen.width/2)-(w/2);
 
-  chrome.windows.create({
-    url: '/popup.html?text=' + encodeURIComponent(selectionText) + '&url=' + encodeURIComponent(originalUrl),
-    type: 'popup',
-    width: 500,
-    height: 580,
-    top: top,
-    left: left
+  isAuthenticated().then((isAuth) => {
+    const destination = isAuth 
+      ? '/popup.html?' 
+      : 'https://fantastic-hippo.appspot.com/auth/twitter?referrer=' + chrome.extension.getURL('/')
+    chrome.windows.create({
+      url: (destination) + 
+        '&text=' + encodeURIComponent(selectionText) + 
+        '&url=' + encodeURIComponent(originalUrl),
+      type: 'popup',
+      width: 500,
+      height: 580,
+      top: top,
+      left: left
+    });
   });
 });
 

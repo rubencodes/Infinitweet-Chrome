@@ -16,7 +16,7 @@ chrome.contextMenus.onClicked.addListener((data) => {
   isAuthenticated().then((isAuth) => {
     const destination = isAuth 
       ? '/popup.html?' 
-      : 'https://fantastic-hippo.appspot.com/auth/twitter?referrer=' + chrome.extension.getURL('/')
+      : 'https://fantastic-hippo.appspot.com/auth/twitter?';
     chrome.windows.create({
       url: (destination) + 
         '&text=' + encodeURIComponent(selectionText) + 

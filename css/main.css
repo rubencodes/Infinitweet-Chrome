@@ -57,7 +57,7 @@ h3 {
 .navbar.navbar-default {
   background: white;
   color: #222;
-  box-shadow: 5px -5px 30px #ddd;
+  box-shadow: 0px 0px 6px #ddd;
   height: 50px;
 }
 .navbar>.container {
@@ -97,6 +97,9 @@ h3 {
 }
 small {
   color: gray;
+}
+button {
+  margin-top: 3px;
 }
 #container {
   width: 100%;

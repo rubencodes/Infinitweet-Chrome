@@ -1,4 +1,5 @@
 function createInfinitweet(options) {
+	const url   = options.url;
 	const text  = options.text + '\n';
 	const lines = text.split('\n');
 
@@ -113,6 +114,10 @@ function createInfinitweet(options) {
 	temp_context.textAlign = 'right';
 	temp_context.fillStyle = '#888888';
 	temp_context.fillText(wordmark, temp.width - options.paddingSize, temp.height - options.paddingSize);
+  
+    //draw source url
+	temp_context.textAlign = 'left';
+	temp_context.fillText('Source: ' + extractDomain(url), options.paddingSize, temp.height - options.paddingSize);
 
     return {
       text: options.text,
@@ -152,6 +157,21 @@ function getHeightForTextFromWidth(lines, width, lineHeight, context) {
 	}
 
 	return y;
+}
+function extractDomain(url) {
+    let domain;
+    //find & remove protocol (http, ftp, etc.) and get domain
+    if (url.indexOf("://") > -1) {
+        domain = url.split('/')[2];
+    }
+    else {
+        domain = url.split('/')[0];
+    }
+
+    //find & remove port number
+    domain = domain.split(':')[0];
+
+    return domain;
 }
 
 function postInfinitweet(params) {

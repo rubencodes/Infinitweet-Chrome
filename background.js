@@ -5,7 +5,8 @@ chrome.contextMenus.create({
 });
 
 chrome.contextMenus.onClicked.addListener((data) => {
-  const selectionText = data.selectionText;
+  const selectionText = `“${data.selectionText}”`;
+  const originalUrl   = data.pageUrl;
   
   const w = 500;
   const h = 580;
@@ -13,7 +14,7 @@ chrome.contextMenus.onClicked.addListener((data) => {
   const left = (screen.width/2)-(w/2);
 
   chrome.windows.create({
-    url: '/popup.html?text=' + encodeURIComponent(selectionText),
+    url: '/popup.html?text=' + encodeURIComponent(selectionText) + '&url=' + encodeURIComponent(originalUrl),
     type: 'popup',
     width: 500,
     height: 580,

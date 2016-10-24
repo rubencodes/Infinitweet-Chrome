@@ -2,11 +2,14 @@ $('textarea#tweetBox').on('input change keyup', handleTyping);
 $('button#clickToTweet').on('click', tweet);
 
 // Set preview source.
-const selectedText = decodeURIComponent(window.location.search.slice('?text='.length));
-previewInfinitweet(selectedText);
+const queryStrings = decodeURIComponent(window.location.search).slice(1).split('&');
+const selectedText = queryStrings[0].slice('text='.length);
+const originalUrl  = queryStrings[1].slice('url='.length);
+previewInfinitweet(selectedText, originalUrl);
 
-function previewInfinitweet(text) {
+function previewInfinitweet(text, url) {
   const infinitweet = createInfinitweet({
+    url,
     text,
     fontSize: '12',
     fontFamily: 'Helvetica',

@@ -17,14 +17,11 @@ textDidChange();
 function textDidChange() {
   //check if textbox is empty
   if (textbox.value.length > 0) {
-    document.getElementById("share-image").setAttribute("class", "icon ion-ios-upload-outline");
+    document.getElementById("share").removeAttribute("disabled");
+    document.getElementById("trash").removeAttribute("disabled");
   } else {
-    document.getElementById("share-image").setAttribute("class", "icon ion-ios-upload-outline disabled");
-    if (localStorage.getItem("shownMessage") == null) {
-      localStorage.setItem("shownMessage", true);
-    } else {
-      setPlaceholder();
-    }
+    document.getElementById("share").setAttribute("disabled", true);
+    document.getElementById("trash").setAttribute("disabled", true);
   }
 
   //backup contents
@@ -47,6 +44,7 @@ function setPlaceholder(override, value) {
 function clearText() {
   textbox.value = "";
   localStorage.setItem("backup", textbox.value);
+  textDidChange();
   focusTextbox();
 }
 

@@ -2,9 +2,9 @@ $('textarea#tweetBox').on('input change keyup', handleTyping);
 $('button#clickToTweet').on('click', tweet);
 
 // Set preview source.
-const queryStrings = decodeURIComponent(window.location.search).slice(1).split('&');
-const selectedText = queryStrings[0].slice('text='.length);
-const originalUrl  = queryStrings[1].slice('url='.length);
+const queryStrings = decodeURIComponent(window.location.search.slice(1)).split('&');
+const selectedText = queryStrings.find((string) => string.startsWith('text=')).slice('text='.length);
+const originalUrl  = queryStrings.find((string) => string.startsWith('url=')).slice('url='.length);
 previewInfinitweet(selectedText, originalUrl);
 
 function previewInfinitweet(text, url) {

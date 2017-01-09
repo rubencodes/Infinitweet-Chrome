@@ -16,7 +16,7 @@ chrome.contextMenus.onClicked.addListener((data) => {
   isAuthenticated().then((isAuth) => {
     const destination = isAuth 
       ? '/popup.html?' 
-      : 'https://fantastic-hippo.appspot.com/auth/twitter?';
+      : 'https://infinitweet-server.herokuapp.com/auth/twitter?';
     chrome.windows.create({
       url: (destination) + 
         '&text=' + encodeURIComponent(selectionText) + 
@@ -49,7 +49,7 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 function isAuthenticated() {
-  return fetch('https://fantastic-hippo.appspot.com/authenticated', {
+  return fetch('https://infinitweet-server.herokuapp.com/authenticated', {
     credentials: 'include',
     headers: {  
       'Content-Type': 'application/json'

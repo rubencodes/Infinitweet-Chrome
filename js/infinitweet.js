@@ -178,7 +178,7 @@ function postInfinitweet(params) {
   const base64Prefix = 'data:image/jpeg;base64,';
   params.media_data = params.media_data.slice(base64Prefix.length - 1);
   
-  return fetch('https://infinitweet-server.herokuapp.com/postInfinitweet', {
+  return fetch('https://server.infinitweet.com/postInfinitweet', {
     method: 'POST',
     credentials: 'include',
     headers: {  

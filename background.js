@@ -7,19 +7,19 @@ chrome.contextMenus.create({
 chrome.contextMenus.onClicked.addListener((data) => {
   const selectionText = `“${data.selectionText}”`;
   const originalUrl   = data.pageUrl;
-  
+
   const w = 500;
   const h = 580;
   const top = (screen.height/2)-(h/2);
   const left = (screen.width/2)-(w/2);
 
   isAuthenticated().then((isAuth) => {
-    const destination = isAuth 
-      ? '/popup.html?' 
-      : 'https://infinitweet-server.herokuapp.com/auth/twitter?';
+    const destination = isAuth
+      ? '/popup.html?'
+      : 'https://server.infinitweet.com/auth/twitter?';
     chrome.windows.create({
-      url: (destination) + 
-        '&text=' + encodeURIComponent(selectionText) + 
+      url: (destination) +
+        '&text=' + encodeURIComponent(selectionText) +
         '&url=' + encodeURIComponent(originalUrl),
       type: 'popup',
       width: 500,
@@ -49,11 +49,11 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 function isAuthenticated() {
-  return fetch('https://infinitweet-server.herokuapp.com/authenticated', {
+  return fetch('https://server.infinitweet.com/authenticated', {
     credentials: 'include',
-    headers: {  
+    headers: {
       'Content-Type': 'application/json'
-    } 
+    }
   }).then((response) => {
     return response.text();
   }).then((text) => {

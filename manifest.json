@@ -3,7 +3,7 @@
 
     "name": "Infinitweet Chrome",
     "description": "Infinitweet lets you write infinitely long tweets.",
-    "version": "5.2",
+    "version": "5.4",
 		"browser_action": {
         "default_icon": "img/128.png",
         "default_popup": "app.html"
@@ -14,6 +14,7 @@
     },
     "permissions": [
       "contextMenus",
+      "https://server.infinitweet.com/",
       "https://ajax.googleapis.com/",
       "https://maxcdn.bootstrapcdn.com/"
     ],
